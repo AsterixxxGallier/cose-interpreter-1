@@ -1,0 +1,52 @@
+file = { SOI ~ empty_lines ~ expression? ~ (NEWLINE ~ expression ~ empty_lines)* ~ &EOI }
+
+// region whitespace
+empty_lines = _{ (NEWLINE ~ space ~ &(NEWLINE | EOI | ")"))* }
+space = _{ " "* }
+// endregion
+
+// region expression
+
+// region association
+left = { (enclosed_expressions | (reference | cose | text))? }
+right = { indented_expressions? }
+association = { left ~ space ~ ":" ~ space ~ right }
+// endregion
+
+// region expressions
+enclosed_expressions = _{ "(" ~ space ~ maybe_indented_expressions ~ space ~ ")" }
+indented_expressions = _{ expression? ~ indented_block? }
+maybe_indented_expressions = _{ expression? ~ maybe_indented_block? }
+// endregion
+
+// region indentation
+indent = _{ " "+ }
+equally_indented_lines = _{ (NEWLINE ~ PEEK_ALL ~ expression ~ empty_lines)* }
+indented_block = _{ NEWLINE ~ empty_lines ~ PEEK_ALL ~ PUSH(indent) ~ expression ~ empty_lines ~ equally_indented_lines ~ DROP }
+maybe_indented_block = _{ NEWLINE ~ empty_lines ~ PEEK_ALL ~ PUSH(indent?) ~ expression ~ empty_lines ~ equally_indented_lines ~ DROP }
+// endregion
+
+// region expression
+expression = _{ association | reference | cose | text }
+
+// region reference
+reference = { multi_reference | prefix_reference}
+multi_reference = { referenceable ~ (space ~ arrow ~ space ~ referenceable)+ }
+referenceable = { prefix_reference | enclosed_expressions | cose | text }
+prefix_reference = { arrow ~ space ~ referenceable}
+arrow = _{ ">" }
+// endregion
+
+cose = { "COSE" }
+
+// region text
+text = { !" " ~ text_component+ ~ space }
+text_component = _{ valid_text_char | escape_sequence }
+escape_sequence = _{ escape_char ~ escaped_char }
+escape_char = _{ "\\" }
+escaped_char = { escape_char | " " | ">" | "(" | ")" | ":" | NEWLINE }
+invalid_text_char = { escape_char | ">" | "(" | ")" | ":" | NEWLINE | EOI }
+valid_text_char = { !(invalid_text_char | (space ~ &invalid_text_char)) ~ ANY }
+// endregion
+// endregion
+// endregion
