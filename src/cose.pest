@@ -8,9 +8,9 @@ space = _{ " "* }
 // region expression
 
 // region association
-left = { (enclosed_expressions | (reference | cose | text))? }
-right = { indented_expressions? }
-association = { left ~ space ~ ":" ~ space ~ right }
+keys = { (enclosed_expressions | (reference | cose | text))? }
+values = { indented_expressions? }
+association = { keys ~ space ~ ":" ~ space ~ values }
 // endregion
 
 // region expressions

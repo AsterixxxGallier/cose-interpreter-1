@@ -15,12 +15,9 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="458b023f-1505-4862-93e8-ecd1f92a60a6" name="Changes" comment="Implement the Builder struct which builds a better AST from the generated Pest ast">
+    <list default="true" id="458b023f-1505-4862-93e8-ecd1f92a60a6" name="Changes" comment="Store the AST in a LinkedRangeSpacedList instead of a plain Vec">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.lock" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.toml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/parser/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/parser/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/cose.pest" beforeDir="false" afterPath="$PROJECT_DIR$/src/cose.pest" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -106,7 +103,7 @@
       <workItem from="1670879501654" duration="3000" />
       <workItem from="1670939353940" duration="9949000" />
       <workItem from="1670964288388" duration="1806000" />
-      <workItem from="1671115294866" duration="1868000" />
+      <workItem from="1671115294866" duration="2707000" />
     </task>
     <task id="LOCAL-00001" summary="Project setup">
       <created>1670858602637</created>
@@ -129,7 +126,14 @@
       <option name="project" value="LOCAL" />
       <updated>1670944040515</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Store the AST in a LinkedRangeSpacedList instead of a plain Vec">
+      <created>1671122408859</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1671122408859</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -150,7 +154,8 @@
     <MESSAGE value="Project setup" />
     <MESSAGE value="Add the Cose parser" />
     <MESSAGE value="Implement the Builder struct which builds a better AST from the generated Pest ast" />
-    <option name="LAST_COMMIT_MESSAGE" value="Implement the Builder struct which builds a better AST from the generated Pest ast" />
+    <MESSAGE value="Store the AST in a LinkedRangeSpacedList instead of a plain Vec" />
+    <option name="LAST_COMMIT_MESSAGE" value="Store the AST in a LinkedRangeSpacedList instead of a plain Vec" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />
