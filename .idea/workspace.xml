@@ -15,8 +15,10 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="458b023f-1505-4862-93e8-ecd1f92a60a6" name="Changes" comment="Add the Cose parser">
+    <list default="true" id="458b023f-1505-4862-93e8-ecd1f92a60a6" name="Changes" comment="Implement the Builder struct which builds a better AST from the generated Pest ast">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Cargo.lock" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.lock" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/Cargo.toml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/parser/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/parser/mod.rs" afterDir="false" />
     </list>
@@ -102,7 +104,9 @@
       <updated>1670857280226</updated>
       <workItem from="1670857281764" duration="9381000" />
       <workItem from="1670879501654" duration="3000" />
-      <workItem from="1670939353940" duration="3782000" />
+      <workItem from="1670939353940" duration="9949000" />
+      <workItem from="1670964288388" duration="1806000" />
+      <workItem from="1671115294866" duration="1868000" />
     </task>
     <task id="LOCAL-00001" summary="Project setup">
       <created>1670858602637</created>
@@ -118,7 +122,14 @@
       <option name="project" value="LOCAL" />
       <updated>1670877065553</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Implement the Builder struct which builds a better AST from the generated Pest ast">
+      <created>1670944040515</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1670944040515</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -138,7 +149,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Project setup" />
     <MESSAGE value="Add the Cose parser" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add the Cose parser" />
+    <MESSAGE value="Implement the Builder struct which builds a better AST from the generated Pest ast" />
+    <option name="LAST_COMMIT_MESSAGE" value="Implement the Builder struct which builds a better AST from the generated Pest ast" />
   </component>
   <component name="XSLT-Support.FileAssociations.UIState">
     <expand />

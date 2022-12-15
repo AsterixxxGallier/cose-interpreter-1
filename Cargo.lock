@@ -3,6 +3,12 @@
 version = 3
 
 [[package]]
+name = "array-linked-list"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d7a2da8beedbfae0b5ec522abb1a1436ff693f2e16829704a4f8538888558079"
+
+[[package]]
 name = "block-buffer"
 version = "0.10.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -21,6 +27,7 @@ checksum = "baf1de4339761588bc0619e3cbc0120ee582ebb74b53b4efbf79117bd2da40fd"
 name = "cose-interpreter-1"
 version = "0.1.0"
 dependencies = [
+ "linked-spaced-list",
  "pest",
  "pest_derive",
 ]
@@ -69,6 +76,13 @@ name = "libc"
 version = "0.2.138"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "db6d7e329c562c5dfab7a46a2afabc8b987ab9a4834c9d1ca04dc54c1546cef8"
+
+[[package]]
+name = "linked-spaced-list"
+version = "0.1.0"
+dependencies = [
+ "array-linked-list",
+]
 
 [[package]]
 name = "once_cell"

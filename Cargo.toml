@@ -8,3 +8,4 @@ edition = "2021"
 [dependencies]
 pest = "2.2.1"
 pest_derive = "2.2.1"
+linked-spaced-list = { path = "../linked-spaced-list" }

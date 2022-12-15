@@ -1,6 +1,7 @@
 use std::fmt::{Debug, Formatter};
+use linked_spaced_list::{Bound, LinkedRangeSpacedList};
 use pest::iterators::{Pair, Pairs};
-use pest::Parser;
+use pest::{Parser, Span};
 use pest_derive::Parser;
 use crate::parser::Expression::{Association, Cose, PrefixReference, Reference, Text};
 
@@ -33,18 +34,16 @@ pub enum Expression {
 }
 
 pub(crate) struct Builder {
-    expressions: Vec<Expression>
+    expressions: LinkedRangeSpacedList<Expression>
 }
 
 impl Builder {
     pub fn new() -> Self {
-        Self { expressions: Vec::new() }
+        Self { expressions: LinkedRangeSpacedList::new() }
     }
 
-    fn push(&mut self, expression: Expression) -> usize {
-        let index = self.expressions.len();
-        self.expressions.push(expression);
-        index
+    fn push(&mut self, span: Span, expression: Expression) -> usize {
+        self.expressions.insert_surrounding(span.start(), span.end(), expression).0
     }
 
     pub fn file(&mut self, file: &str) -> Result<Set, pest::error::Error<Rule>> {
@@ -60,7 +59,7 @@ impl Builder {
         match pair.as_rule() {
             Rule::association => self.association(pair, parent),
             Rule::reference => self.reference(pair, parent),
-            Rule::cose => self.cose(),
+            Rule::cose => self.cose(pair),
             Rule::text => self.text(pair),
             _ => panic!()
         }
@@ -76,8 +75,9 @@ impl Builder {
     }
 
     fn prefix_reference(&mut self, pair: Pair<Rule>, parent: Option<usize>) -> usize {
+        let span = pair.as_span();
         let keys = self.referenceables(pair.into_inner().next().unwrap().into_inner(), parent);
-        self.push(PrefixReference { parent, keys })
+        self.push(span, PrefixReference { parent, keys })
     }
 
     fn multi_reference(&mut self, pair: Pair<Rule>, parent: Option<usize>) -> usize {
@@ -85,7 +85,8 @@ impl Builder {
         let mut associations = self.referenceables(elements.next().unwrap().into_inner(), parent);
         while let Some(keys) = elements.next() {
             let keys = self.referenceables(keys.into_inner(), parent);
-            associations = vec![self.push(Reference { parent, associations, keys })];
+            // TODO determine span correctly (enclosed expressions are a source of problems)
+            associations = vec![self.push(Span::new("TODO", 0, 0).unwrap(), Reference { parent, associations, keys })];
         }
         associations[0]
     }
@@ -98,7 +99,7 @@ impl Builder {
     }
 
     fn association(&mut self, pair: Pair<Rule>, parent: Option<usize>) -> usize {
-        let index = self.push(Association { parent, keys: Set::new(), values: Set::new() });
+        let index = self.push(pair.as_span(), Association { parent, keys: Set::new(), values: Set::new() });
         let mut inner = pair.into_inner();
         let keys = self.expressions(inner.next().unwrap().into_inner(), parent);
         let values = self.expressions(inner.next().unwrap().into_inner(), Some(index));
@@ -113,12 +114,12 @@ impl Builder {
         index
     }
 
-    fn cose(&mut self) -> usize {
-        self.push(Cose)
+    fn cose(&mut self, pair: Pair<Rule>) -> usize {
+        self.push(pair.as_span(), Cose)
     }
 
     fn text(&mut self, pair: Pair<Rule>) -> usize {
-        self.push(Text(pair.into_inner().map(Self::text_component).collect()))
+        self.push(pair.as_span(), Text(pair.into_inner().map(Self::text_component).collect()))
     }
 
     fn text_component(pair: Pair<Rule>) -> char {
@@ -132,8 +133,15 @@ impl Builder {
 
 impl Debug for Builder {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
-        for (index, expression) in self.expressions.iter().enumerate() {
-            writeln!(f, "{:2}: {:?}", index, expression)?;
+        for (index, position, expression) in self.expressions.indexed() {
+            match expression {
+                Bound::Start { value, .. } => {
+                    writeln!(f, "{:2} starts at {}: {:?}", index, position, value)?;
+                }
+                Bound::End { start } => {
+                    writeln!(f, "{:2} ends at {}", start, position)?;
+                }
+            }
         }
         Ok(())
     }
