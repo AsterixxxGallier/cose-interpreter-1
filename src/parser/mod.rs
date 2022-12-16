@@ -1,4 +1,5 @@
 use std::fmt::{Debug, Formatter};
+use std::iter::once;
 use linked_spaced_list::{Bound, LinkedRangeSpacedList};
 use pest::iterators::{Pair, Pairs};
 use pest::{Parser, Span};
@@ -18,7 +19,7 @@ pub enum Expression {
     Association {
         parent: Option<usize>,
         keys: Set,
-        values: Set
+        values: Set,
     },
     Reference {
         parent: Option<usize>,
@@ -34,7 +35,7 @@ pub enum Expression {
 }
 
 pub(crate) struct Builder {
-    expressions: LinkedRangeSpacedList<Expression>
+    expressions: LinkedRangeSpacedList<Expression>,
 }
 
 impl Builder {
@@ -52,7 +53,15 @@ impl Builder {
     }
 
     fn expressions(&mut self, pairs: Pairs<Rule>, parent: Option<usize>) -> Set {
-        pairs.map(|pair| self.expression(pair, parent)).collect()
+        pairs
+            // .flat_map(|pair: Pair<Rule>|
+            //     if pair.as_rule() == Rule::enclosed_expressions {
+            //         pair.into_inner().collect()
+            //     } else {
+            //         vec![pair]
+            //     }
+            // )
+            .map(|pair| self.expression(pair, parent)).collect()
     }
 
     fn expression(&mut self, pair: Pair<Rule>, parent: Option<usize>) -> usize {
@@ -82,8 +91,11 @@ impl Builder {
 
     fn multi_reference(&mut self, pair: Pair<Rule>, parent: Option<usize>) -> usize {
         let mut elements = pair.into_inner();
-        let mut associations = self.referenceables(elements.next().unwrap().into_inner(), parent);
+        let first_element = elements.next().unwrap();
+        let mut span = first_element.as_span().clone();
+        let mut associations = self.referenceables(first_element.into_inner(), parent);
         while let Some(keys) = elements.next() {
+            spa
             let keys = self.referenceables(keys.into_inner(), parent);
             // TODO determine span correctly (enclosed expressions are a source of problems)
             associations = vec![self.push(Span::new("TODO", 0, 0).unwrap(), Reference { parent, associations, keys })];
