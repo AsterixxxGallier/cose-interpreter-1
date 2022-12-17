@@ -14,7 +14,7 @@ association = { keys ~ space ~ ":" ~ space ~ values }
 // endregion
 
 // region expressions
-enclosed_expressions = _{ "(" ~ space ~ maybe_indented_expressions ~ space ~ ")" }
+enclosed_expressions = { "(" ~ space ~ maybe_indented_expressions ~ space ~ ")" }
 indented_expressions = _{ expression? ~ indented_block? }
 maybe_indented_expressions = _{ expression? ~ maybe_indented_block? }
 // endregion

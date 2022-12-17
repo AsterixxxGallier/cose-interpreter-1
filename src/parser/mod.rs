@@ -34,33 +34,42 @@ pub enum Expression {
     Text(String),
 }
 
-pub(crate) struct Builder {
+pub(crate) struct Builder<'s> {
     expressions: LinkedRangeSpacedList<Expression>,
+    top_level: Set,
+    source: &'s str
 }
 
-impl Builder {
-    pub fn new() -> Self {
-        Self { expressions: LinkedRangeSpacedList::new() }
+impl<'s> Builder<'s> {
+    pub fn new(source: &'s str) -> Result<Self, pest::error::Error<Rule>> {
+        let mut this = Self {
+            expressions: LinkedRangeSpacedList::new(),
+            top_level: Set::new(),
+            source
+        };
+        let file = CoseParser::parse(Rule::file, source)?.next().unwrap();
+        let mut top_level = this.expressions(file.into_inner(), None);
+        this.top_level.append(&mut top_level);
+        Ok(this)
     }
 
-    fn push(&mut self, span: Span, expression: Expression) -> usize {
-        self.expressions.insert_surrounding(span.start(), span.end(), expression).0
+    fn push(&mut self, start: usize, end: usize, expression: Expression) -> usize {
+        self.expressions.insert_surrounding(start, end, expression).0
     }
 
-    pub fn file(&mut self, file: &str) -> Result<Set, pest::error::Error<Rule>> {
-        let file = CoseParser::parse(Rule::file, file)?.next().unwrap();
-        Ok(self.expressions(file.into_inner(), None))
+    fn push_span(&mut self, span: Span, expression: Expression) -> usize {
+        self.push(span.start(), span.end(), expression)
     }
 
     fn expressions(&mut self, pairs: Pairs<Rule>, parent: Option<usize>) -> Set {
         pairs
-            // .flat_map(|pair: Pair<Rule>|
-            //     if pair.as_rule() == Rule::enclosed_expressions {
-            //         pair.into_inner().collect()
-            //     } else {
-            //         vec![pair]
-            //     }
-            // )
+            .flat_map(|pair: Pair<Rule>|
+                if pair.as_rule() == Rule::enclosed_expressions {
+                    pair.into_inner().collect()
+                } else {
+                    vec![pair]
+                }
+            )
             .map(|pair| self.expression(pair, parent)).collect()
     }
 
@@ -86,19 +95,18 @@ impl Builder {
     fn prefix_reference(&mut self, pair: Pair<Rule>, parent: Option<usize>) -> usize {
         let span = pair.as_span();
         let keys = self.referenceables(pair.into_inner().next().unwrap().into_inner(), parent);
-        self.push(span, PrefixReference { parent, keys })
+        self.push_span(span, PrefixReference { parent, keys })
     }
 
     fn multi_reference(&mut self, pair: Pair<Rule>, parent: Option<usize>) -> usize {
+        let start = pair.as_span().start();
         let mut elements = pair.into_inner();
         let first_element = elements.next().unwrap();
-        let mut span = first_element.as_span().clone();
         let mut associations = self.referenceables(first_element.into_inner(), parent);
         while let Some(keys) = elements.next() {
-            spa
+            let end = keys.as_span().end();
             let keys = self.referenceables(keys.into_inner(), parent);
-            // TODO determine span correctly (enclosed expressions are a source of problems)
-            associations = vec![self.push(Span::new("TODO", 0, 0).unwrap(), Reference { parent, associations, keys })];
+            associations = vec![self.push(start, end, Reference { parent, associations, keys })];
         }
         associations[0]
     }
@@ -111,7 +119,7 @@ impl Builder {
     }
 
     fn association(&mut self, pair: Pair<Rule>, parent: Option<usize>) -> usize {
-        let index = self.push(pair.as_span(), Association { parent, keys: Set::new(), values: Set::new() });
+        let index = self.push_span(pair.as_span(), Association { parent, keys: Set::new(), values: Set::new() });
         let mut inner = pair.into_inner();
         let keys = self.expressions(inner.next().unwrap().into_inner(), parent);
         let values = self.expressions(inner.next().unwrap().into_inner(), Some(index));
@@ -127,11 +135,11 @@ impl Builder {
     }
 
     fn cose(&mut self, pair: Pair<Rule>) -> usize {
-        self.push(pair.as_span(), Cose)
+        self.push_span(pair.as_span(), Cose)
     }
 
     fn text(&mut self, pair: Pair<Rule>) -> usize {
-        self.push(pair.as_span(), Text(pair.into_inner().map(Self::text_component).collect()))
+        self.push_span(pair.as_span(), Text(pair.into_inner().map(Self::text_component).collect()))
     }
 
     fn text_component(pair: Pair<Rule>) -> char {
@@ -143,7 +151,7 @@ impl Builder {
     }
 }
 
-impl Debug for Builder {
+impl<'s> Debug for Builder<'s> {
     fn fmt(&self, f: &mut Formatter<'_>) -> std::fmt::Result {
         for (index, position, expression) in self.expressions.indexed() {
             match expression {
