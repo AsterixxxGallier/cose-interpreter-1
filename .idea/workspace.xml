@@ -15,8 +15,10 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="458b023f-1505-4862-93e8-ecd1f92a60a6" name="Changes" comment="Fix Reference spans">
+    <list default="true" id="458b023f-1505-4862-93e8-ecd1f92a60a6" name="Changes" comment="TODO">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/parser/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/parser/mod.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -107,6 +109,7 @@
       <workItem from="1671222055217" duration="2836000" />
       <workItem from="1671275213141" duration="2477000" />
       <workItem from="1671393770895" duration="4000" />
+      <workItem from="1671724203449" duration="673000" />
     </task>
     <task id="LOCAL-00001" summary="Project setup">
       <created>1670858602637</created>

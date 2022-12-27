@@ -1,18 +1,16 @@
 use std::fmt::{Debug, Formatter};
-use std::iter::once;
 use linked_spaced_list::{Bound, LinkedRangeSpacedList};
 use pest::iterators::{Pair, Pairs};
 use pest::{Parser, Span};
 use pest_derive::Parser;
 use crate::parser::Expression::{Association, Cose, PrefixReference, Reference, Text};
+use crate::Set;
 
 #[derive(Parser)]
 #[grammar = "cose.pest"]
 pub struct CoseParser;
 
 pub mod error;
-
-type Set = Vec<usize>;
 
 #[derive(Debug)]
 pub enum Expression {
@@ -35,9 +33,9 @@ pub enum Expression {
 }
 
 pub(crate) struct Builder<'s> {
-    expressions: LinkedRangeSpacedList<Expression>,
-    top_level: Set,
-    source: &'s str
+    pub(crate) expressions: LinkedRangeSpacedList<Expression>,
+    pub(crate) top_level: Set,
+    pub(crate) source: &'s str
 }
 
 impl<'s> Builder<'s> {
